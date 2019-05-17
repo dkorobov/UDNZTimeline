@@ -57,7 +57,8 @@
     }
     var dotDomTag = 'dot'
     var defaults = {
-        data_url: 'data/timeline-nodes.json',
+		data: '',
+        data_url: '',
         container: {
             id: 'timeline_container',
             width: 0,
@@ -267,7 +268,8 @@
 
                 if (!!this._cache.data) {
                     this.__drawNodes(this._cache.data)
-                } else {
+                } 
+				else if (this.params.data_url.length > 0){
                     $.ajax({
                         type: 'GET',
                         url: this.params.data_url,
@@ -286,6 +288,17 @@
                         }
                     })
                 }
+				else {
+					var _json = $.parseJSON(this.params.data);
+					
+					if(typeof _json == 'object'){
+						this._cache.data = _json;
+						this.__drawNodes(this._cache.data);
+					}
+					else{
+						this.__showErrMsg('Invalid JSON string, please check supplied object');
+					}
+				}
             } else {
                 this.__showErrMsg('Can not create &lt;svg&gt;!')
             }
